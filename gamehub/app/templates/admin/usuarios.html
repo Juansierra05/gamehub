@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Usuarios - GameHub{% endblock %}
+{% block content %}
+<h1>Usuarios registrados</h1>
+<table class="admin-table">
+    <thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Registro</th></tr></thead>
+    <tbody>
+        {% for u in usuarios %}
+        <tr>
+            <td>{{ u.nombre }}</td>
+            <td>{{ u.email }}</td>
+            <td>{{ 'Admin' if u.es_admin else 'Usuario' }}</td>
+            <td>{{ u.fecha_registro.strftime('%d/%m/%Y') }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

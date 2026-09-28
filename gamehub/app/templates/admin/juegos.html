@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Administrar juegos - GameHub{% endblock %}
+{% block content %}
+<h1>Administrar videojuegos</h1>
+<a href="{{ url_for('admin.nuevo_juego') }}" class="btn-primary">+ Nuevo juego</a>
+
+<table class="admin-table">
+    <thead>
+        <tr><th>Título</th><th>Género</th><th>Año</th><th>Plataforma</th><th>Acciones</th></tr>
+    </thead>
+    <tbody>
+        {% for juego in juegos %}
+        <tr>
+            <td>{{ juego.titulo }}</td>
+            <td>{{ juego.genero.nombre if juego.genero else '—' }}</td>
+            <td>{{ juego.anio_lanzamiento or '—' }}</td>
+            <td>{{ juego.plataforma or '—' }}</td>
+            <td>
+                <a href="{{ url_for('admin.editar_juego', juego_id=juego.id) }}">Editar</a>
+                <form method="post" action="{{ url_for('admin.eliminar_juego', juego_id=juego.id) }}" style="display:inline">
+                    <button type="submit" class="btn-link-danger" onclick="return confirm('¿Eliminar este juego?')">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5">No hay juegos registrados.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

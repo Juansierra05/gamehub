@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Administrar géneros - GameHub{% endblock %}
+{% block content %}
+<h1>Administrar géneros</h1>
+
+<form method="post" class="filtros">
+    <input type="text" name="nombre" placeholder="Nombre del género" required>
+    <button type="submit" class="btn-primary">Agregar género</button>
+</form>
+
+<table class="admin-table">
+    <thead><tr><th>Nombre</th><th>Juegos asociados</th><th>Acciones</th></tr></thead>
+    <tbody>
+        {% for genero in generos %}
+        <tr>
+            <td>{{ genero.nombre }}</td>
+            <td>{{ genero.juegos|length }}</td>
+            <td>
+                <form method="post" action="{{ url_for('admin.eliminar_genero', genero_id=genero.id) }}">
+                    <button type="submit" class="btn-link-danger" onclick="return confirm('¿Eliminar este género?')">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="3">No hay géneros registrados.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

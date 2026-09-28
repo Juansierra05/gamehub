@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Panel Admin - GameHub{% endblock %}
+{% block content %}
+<h1>Panel de administrador</h1>
+<div class="stats-grid">
+    <div class="stat-card"><h2>{{ total_juegos }}</h2><p>Videojuegos</p></div>
+    <div class="stat-card"><h2>{{ total_usuarios }}</h2><p>Usuarios</p></div>
+    <div class="stat-card"><h2>{{ total_generos }}</h2><p>Géneros</p></div>
+</div>
+
+<div class="admin-links">
+    <a href="{{ url_for('admin.listar_juegos') }}" class="btn-primary">Gestionar juegos</a>
+    <a href="{{ url_for('admin.generos') }}" class="btn-primary">Gestionar géneros</a>
+    <a href="{{ url_for('admin.listar_usuarios') }}" class="btn-primary">Ver usuarios</a>
+</div>
+{% endblock %}

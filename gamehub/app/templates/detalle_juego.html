@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}{{ juego.titulo }} - GameHub{% endblock %}
+{% block content %}
+<div class="detalle-juego">
+    <img src="{{ juego.imagen_url or 'https://via.placeholder.com/400x250?text=' + juego.titulo }}" alt="{{ juego.titulo }}">
+    <div class="detalle-info">
+        <h1>{{ juego.titulo }}</h1>
+        <p class="genero-tag">{{ juego.genero.nombre if juego.genero else 'Sin género' }}</p>
+        <p><strong>Desarrollador:</strong> {{ juego.desarrollador or '—' }}</p>
+        <p><strong>Año:</strong> {{ juego.anio_lanzamiento or '—' }}</p>
+        <p><strong>Plataforma:</strong> {{ juego.plataforma or '—' }}</p>
+        <p class="rating">⭐ {{ juego.promedio_calificacion }} / 5 ({{ juego.total_calificaciones }} calificaciones)</p>
+        <p>{{ juego.descripcion or 'Sin descripción disponible.' }}</p>
+        {% if juego.capturas %}
+<div class="galeria-capturas">
+    {% for captura in juego.capturas %}
+    <img src="{{ captura.url }}" alt="Captura de {{ juego.titulo }}">
+    {% endfor %}
+</div>
+{% endif %}
+
+        {% if current_user.is_authenticated %}
+    {% if es_favorito %}
+    <form method="post" action="{{ url_for('favorito.quitar', juego_id=juego.id) }}">
+        <button type="submit" class="fav-heart is-fav">♥</button>
+    </form>
+    {% else %}
+    <form method="post" action="{{ url_for('favorito.agregar', juego_id=juego.id) }}">
+        <button type="submit" class="fav-heart">♡</button>
+    </form>
+    {% endif %}
+{% endif %}
+    </div>
+</div>
+
+<section class="resenas">
+    <h2>Reseñas de la comunidad</h2>
+
+    {% if current_user.is_authenticated %}
+    <form method="post" action="{{ url_for('resena.agregar_resena', juego_id=juego.id) }}" class="form-resena">
+    <label>Tu calificación:</label>
+    <div class="star-rating">
+        <input type="radio" id="star5" name="puntuacion" value="5" checked><label for="star5">★</label>
+        <input type="radio" id="star4" name="puntuacion" value="4"><label for="star4">★</label>
+        <input type="radio" id="star3" name="puntuacion" value="3"><label for="star3">★</label>
+        <input type="radio" id="star2" name="puntuacion" value="2"><label for="star2">★</label>
+        <input type="radio" id="star1" name="puntuacion" value="1"><label for="star1">★</label>
+    </div>
+    <textarea name="comentario" placeholder="Escribe tu reseña..." rows="3" required></textarea>
+    <button type="submit" class="btn-primary">Publicar reseña</button>
+</form>
+    {% else %}
+    <p><a href="{{ url_for('usuario.login') }}">Inicia sesión</a> para dejar tu reseña.</p>
+    {% endif %}
+
+    {% if resenas %}
+        {% for resena in resenas %}
+        <div class="resena-card">
+            <p class="resena-autor">{{ resena.usuario.nombre }} <span class="resena-fecha">{{ resena.fecha.strftime('%d/%m/%Y') }}</span></p>
+            <p>{{ resena.comentario }}</p>
+            {% if current_user.is_authenticated and (current_user.id == resena.usuario_id or current_user.es_admin) %}
+            <form method="post" action="{{ url_for('resena.eliminar_resena', resena_id=resena.id) }}">
+                <button type="submit" class="btn-link-danger">Eliminar</button>
+            </form>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>Todavía no hay reseñas para este juego. ¡Sé el primero!</p>
+    {% endif %}
+</section>
+{% if similares %}
+<section class="similares">
+    <h2>Juegos similares</h2>
+    <div class="grid-juegos">
+        {% for s in similares %}
+        <a href="{{ url_for('juego.detalle', juego_id=s.id) }}" class="card-juego">
+            <img src="{{ s.imagen_url or 'https://via.placeholder.com/300x180?text=' + s.titulo }}" alt="{{ s.titulo }}">
+            <div class="card-juego-info">
+                <h3>{{ s.titulo }}</h3>
+                <p class="rating">⭐ {{ s.promedio_calificacion }} ({{ s.total_calificaciones }})</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+{% endblock %}

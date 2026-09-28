@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar' if juego else 'Nuevo' }} juego - GameHub{% endblock %}
+{% block content %}
+<div class="form-box">
+    <h1>{{ 'Editar juego' if juego else 'Nuevo juego' }}</h1>
+    <form method="post">
+        <label>Título</label>
+        <input type="text" name="titulo" value="{{ juego.titulo if juego else '' }}" required>
+
+        <label>Descripción</label>
+        <textarea name="descripcion" rows="3">{{ juego.descripcion if juego else '' }}</textarea>
+
+        <label>Desarrollador</label>
+        <input type="text" name="desarrollador" value="{{ juego.desarrollador if juego else '' }}">
+
+        <label>Año de lanzamiento</label>
+        <input type="number" name="anio_lanzamiento" value="{{ juego.anio_lanzamiento if juego else '' }}">
+
+        <label>Plataforma</label>
+        <input type="text" name="plataforma" value="{{ juego.plataforma if juego else '' }}" placeholder="PC, PS5, Switch...">
+
+        <label>Duracion (horas)</label>
+        <input type="number" name="duracion_horas" value="{{ juego.duracion_horas if juego else ''}}">
+
+        <label>URL de imagen</label>
+        <input type="text" name="imagen_url" value="{{ juego.imagen_url if juego else '' }}">
+
+        <label>Capturas de pantalla (una URL por línea)</label>
+        <textarea name="capturas_urls" rows="4" placeholder="https://ejemplo.com/captura1.jpg
+         https://ejemplo.com/captura2.jpg">{% if juego %}{% for c in juego.capturas %}{{ c.url }}
+         {% endfor %}{% endif %}</textarea>
+
+        <label>Género</label>
+        <select name="genero_id">
+            <option value="">-- Sin género --</option>
+            {% for genero in generos %}
+            <option value="{{ genero.id }}" {% if juego and juego.genero_id == genero.id %}selected{% endif %}>{{ genero.nombre }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="btn-primary">Guardar</button>
+    </form>
+</div>
+{% endblock %}

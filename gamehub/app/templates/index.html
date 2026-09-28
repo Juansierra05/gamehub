@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}GameHub - Inicio{% endblock %}
+{% block content %}
+<section class="hero">
+    <h1>Bienvenido a GameHub</h1>
+    <p>Descubre, califica y guarda tus videojuegos favoritos.</p>
+
+    <form method="get" action="{{ url_for('juego.catalogo') }}" class="hero-search">
+        <input type="text" name="q" placeholder="Busca un juego por título...">
+        <button type="submit" class="btn-primary">Buscar</button>
+    </form>
+
+    <div class="stats-bar">
+        <div class="stat-item"><strong>{{ total_juegos }}</strong><span>Juegos</span></div>
+        <div class="stat-item"><strong>{{ total_resenas }}</strong><span>Reseñas</span></div>
+        <div class="stat-item"><strong>{{ total_usuarios }}</strong><span>Usuarios</span></div>
+    </div>
+
+    <a href="{{ url_for('juego.catalogo') }}" class="btn-secondary">Explorar catálogo</a>
+</section>
+
+{% if mejor_calificados %}
+<section>
+    <h2>⭐ Mejor calificados</h2>
+    <div class="grid-juegos">
+        {% for juego in mejor_calificados %}
+        <a href="{{ url_for('juego.detalle', juego_id=juego.id) }}" class="card-juego">
+            <img src="{{ juego.imagen_url or 'https://via.placeholder.com/300x180?text=' + juego.titulo }}" alt="{{ juego.titulo }}">
+            <div class="card-juego-info">
+                <h3>{{ juego.titulo }}</h3>
+                <p class="rating">⭐ {{ juego.promedio_calificacion }} ({{ juego.total_calificaciones }})</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+<section>
+    <h2>Últimos juegos agregados</h2>
+    {% if destacados %}
+    <div class="grid-juegos">
+        {% for juego in destacados %}
+        <a href="{{ url_for('juego.detalle', juego_id=juego.id) }}" class="card-juego">
+            <img src="{{ juego.imagen_url or 'https://via.placeholder.com/300x180?text=' + juego.titulo }}" alt="{{ juego.titulo }}">
+            <div class="card-juego-info">
+                <h3>{{ juego.titulo }}</h3>
+                <p class="genero-tag">{{ juego.genero.nombre if juego.genero else 'Sin género' }}</p>
+                <p class="rating">⭐ {{ juego.promedio_calificacion }} ({{ juego.total_calificaciones }})</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>Todavía no hay juegos registrados. ¡El administrador puede agregar los primeros!</p>
+    {% endif %}
+</section>
+
+<section>
+    <h2>Explora por género</h2>
+    <div class="chips">
+        {% for genero in generos %}
+        <a href="{{ url_for('juego.catalogo', genero=genero.id) }}" class="chip">{{ genero.nombre }}</a>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

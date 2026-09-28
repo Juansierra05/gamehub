@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Mis favoritos - GameHub{% endblock %}
+{% block content %}
+<h1>Mis favoritos</h1>
+{% if favoritos %}
+<div class="grid-juegos">
+    {% for fav in favoritos %}
+    <a href="{{ url_for('juego.detalle', juego_id=fav.juego.id) }}" class="card-juego">
+        <img src="{{ fav.juego.imagen_url or 'https://via.placeholder.com/300x180?text=' + fav.juego.titulo }}" alt="{{ fav.juego.titulo }}">
+        <div class="card-juego-info">
+            <h3>{{ fav.juego.titulo }}</h3>
+            <p class="genero-tag">{{ fav.juego.genero.nombre if fav.juego.genero else 'Sin género' }}</p>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<p>Todavía no has agregado juegos a favoritos. <a href="{{ url_for('juego.catalogo') }}">Explora el catálogo</a>.</p>
+{% endif %}
+{% endblock %}

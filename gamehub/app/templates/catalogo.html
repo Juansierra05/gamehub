@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Catálogo - GameHub{% endblock %}
+{% block content %}
+<h1>Catálogo de videojuegos</h1>
+
+<form method="get" class="filtros">
+    <input type="text" name="q" placeholder="Buscar por título..." value="{{ busqueda }}">
+    <select name="genero" onchange="this.form.submit()">
+        <option value="">Todos los géneros</option>
+        {% for genero in generos %}
+        <option value="{{ genero.id }}" {% if genero_id == genero.id %}selected{% endif %}>{{ genero.nombre }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn-primary">Filtrar</button>
+</form>
+
+{% if juegos %}
+<div class="grid-juegos">
+    {% for juego in juegos %}
+    <a href="{{ url_for('juego.detalle', juego_id=juego.id) }}" class="card-juego">
+        <img src="{{ juego.imagen_url or 'https://via.placeholder.com/300x180?text=' + juego.titulo }}" alt="{{ juego.titulo }}">
+        <div class="card-juego-info">
+            <h3>{{ juego.titulo }}</h3>
+            <p class="genero-tag">{{ juego.genero.nombre if juego.genero else 'Sin género' }}</p>
+            <p class="rating">⭐ {{ juego.promedio_calificacion }} ({{ juego.total_calificaciones }})</p>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<p>No se encontraron juegos con esos filtros.</p>
+{% endif %}
+{% endblock %}

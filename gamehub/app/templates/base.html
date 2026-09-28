@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}GameHub{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="{{ url_for('juego.index') }}" class="logo">🎮 GameHub</a>
+            <nav class="nav-links">
+                <a href="{{ url_for('juego.index') }}">Inicio</a>
+                <a href="{{ url_for('juego.catalogo') }}">Catálogo</a>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('favorito.index') }}">Favoritos</a>
+                    <a href="{{ url_for('usuario.perfil') }}">Perfil</a>
+                    {% if current_user.es_admin %}
+                        <a href="{{ url_for('admin.panel') }}" class="admin-link">Admin</a>
+                    {% endif %}
+                    <a href="{{ url_for('usuario.logout') }}">Salir</a>
+                {% else %}
+                    <a href="{{ url_for('usuario.login') }}">Iniciar sesión</a>
+                    <a href="{{ url_for('usuario.registro') }}" class="btn-nav">Registrarse</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% with mensajes = get_flashed_messages(with_categories=true) %}
+            {% if mensajes %}
+                <div class="flash-container">
+                    {% for categoria, mensaje in mensajes %}
+                        <div class="flash flash-{{ categoria }}">{{ mensaje }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>GameHub &copy; 2026 — Proyecto académico de arquitectura MVC (Flask + SQLite)</p>
+    </footer>
+</body>
+</html>
